@@ -1,5 +1,10 @@
 name: eShopOnWeb Build and Test
 
+permissions:
+  id-token: write # This is required for requesting the JWT
+  contents: read  # This is required for actions/checkout
+  
+
 #Triggers (uncomment line below to use it)
 on: [push, workflow_dispatch]
 
@@ -72,7 +77,26 @@ jobs:
     - name: Azure Login
       uses: azure/login@v1
       with:
-        creds: ${{ secrets.AZURE_CRED }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      ##   creds: ${{ secrets.AZURE_CRED }}
+        
+   # Get OIDC token 
+   
+   ## - name: Install OIDC Client from Core Package
+   ##   run: npm install @actions/core@1.6.9 @actions/http-client
+       
+   ## - name: Get id Token
+   ##   uses: actions/github-script@v6
+   ##   id: idtoken
+   ##   with:
+   ##     script: |
+   ##       const coredemo = require ('@actions/core')
+   ##       let id_token = await coredemo.getIDToker()
+   ##       coredemo.setOutput('id_token',id_token)
+
+        
            
     # Deploy Azure WebApp using Bicep file
     - name: deploy
